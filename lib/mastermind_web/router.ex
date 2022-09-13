@@ -17,7 +17,8 @@ defmodule MastermindWeb.Router do
   scope "/", MastermindWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    #get "/", PageController, :index
+    live "/", Demo
   end
 
   # Other scopes may use custom stacks.

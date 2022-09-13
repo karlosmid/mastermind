@@ -39,6 +39,8 @@ defmodule MastermindWeb do
 
       # Include shared imports and aliases for views
       unquote(view_helpers())
+      import Surface
+      use Surface.View, root: "lib/mastermind_web/templates"
     end
   end
 

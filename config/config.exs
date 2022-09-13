@@ -7,6 +7,10 @@
 # General application configuration
 import Config
 
+config :surface, :components, [
+  {Surface.Components.Form.ErrorTag, default_translator: {MastermindWeb.ErrorHelpers, :translate_error}}
+]
+
 config :mastermind,
   ecto_repos: [Mastermind.Repo]
 

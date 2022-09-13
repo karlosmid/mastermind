@@ -26,7 +26,8 @@ config :mastermind, MastermindWeb.Endpoint,
   secret_key_base: "ZqGz4mnkXRH/tP3TyETpkDZyp8aBEMO+xfJc+86jYoPCvsbSZuae2lrWUAKdp0QK",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
-    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 
 # ## SSL Support
@@ -55,12 +56,13 @@ config :mastermind, MastermindWeb.Endpoint,
 
 # Watch static and templates for browser reloading.
 config :mastermind, MastermindWeb.Endpoint,
+  reloadable_compilers: [:gettext, :elixir, :surface],
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/mastermind_web/(live|views)/.*(ex)$",
-      ~r"lib/mastermind_web/templates/.*(eex)$"
+      ~r"lib/mastermind_web/(live|views|components)/.*(ex|sface|js)$",
+      ~r"lib/mastermind_web/templates/.*(eex|sface)$"
     ]
   ]
 
