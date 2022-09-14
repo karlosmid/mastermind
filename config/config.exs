@@ -8,7 +8,8 @@
 import Config
 
 config :surface, :components, [
-  {Surface.Components.Form.ErrorTag, default_translator: {MastermindWeb.ErrorHelpers, :translate_error}}
+  {Surface.Components.Form.ErrorTag,
+   default_translator: {MastermindWeb.ErrorHelpers, :translate_error}}
 ]
 
 config :mastermind,
