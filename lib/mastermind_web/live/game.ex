@@ -52,13 +52,27 @@ defmodule MastermindWeb.Game do
             <td><TogglePin color="fill-fuchsia-500" click="toggle-3-fuchsia" /></td>
             <td><TogglePin color="fill-fuchsia-500" click="toggle-4-fuchsia" /></td>
           </tr>
+          {#for step <- @tries}
+            <tr>
+              {#for pin <- step.pins}
+                <td>
+                  <Pin color={pin} />
+                </td>
+              {/for}
+              {#for hint <- step.hints}
+                <td>
+                  <Pin :if={hint == 0} color="fill-white-500" />
+                  <Pin :if={hint == 1} color="fill-black" />
+                </td>
+              {/for}
+            </tr>
+          {/for}
           <tr>
-            {#for item <- @pins}
+            {#for pin <- @pins}
               <td>
-                <Pin color={item} />
+                <Pin color={pin} />
               </td>
             {/for}
-            <td>Reslut: {@result}</td>
           </tr>
         </tbody>
       </table>
@@ -67,12 +81,20 @@ defmodule MastermindWeb.Game do
   end
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :code, set_code())}
+    socket = assign(socket, :code, set_code())
+    socket = assign(socket, :hints, [])
+    {:ok, socket}
   end
 
   def handle_event("try", _value, socket) do
-    result = socket.assigns.pins == socket.assigns.code
-    {:noreply, assign(socket, :result, result)}
+    socket =
+      assign(socket, :tries, [
+        %{hints: set_hints(socket.assigns), pins: socket.assigns.pins}] ++ socket.assigns.tries
+      )
+
+    socket = assign(socket, :pins, ["empty", "empty", "empty", "empty"])
+    IO.inspect(socket.assigns.tries)
+    {:noreply, socket}
   end
 
   def handle_event("toggle-1-red", _value, socket) do
@@ -187,16 +209,31 @@ defmodule MastermindWeb.Game do
     end
   end
 
-  def set_code() do
+  defp set_code() do
     colors = [
       "fill-red-500",
       "fill-blue-500",
       "fill-orange-500",
       "fill-green-500",
-      "fill-fuchsia-500"
+      "fill-fuchsia-500",
+      "fill-yellow-500"
     ]
 
-    [Enum.random(colors)] ++
-      [Enum.random(colors)] ++ [Enum.random(colors)] ++ [Enum.random(colors)]
+    ([Enum.random(colors)] ++
+       [Enum.random(colors)] ++ [Enum.random(colors)] ++ [Enum.random(colors)])
+    |> IO.inspect()
+  end
+
+  defp set_hints(assigns) do
+    pins = assigns.pins
+    code = assigns.code
+
+    Enum.reduce(0..3, [], fn index, acc ->
+      cond do
+        Enum.at(pins, index) == Enum.at(code, index) -> [0 | acc]
+        Enum.member?(code, Enum.at(pins, index)) -> [1 | acc]
+        true -> acc
+      end
+    end)
   end
 end
