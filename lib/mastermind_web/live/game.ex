@@ -1,21 +1,27 @@
 defmodule MastermindWeb.Game do
   use Surface.LiveView
 
-  alias MastermindWeb.Components.{TogglePin, Pin}
+  alias MastermindWeb.Components.{TogglePin, Pin, Play, Restart}
 
   data pins, :list, default: ["empty", "empty", "empty", "empty"]
 
   data tries, :list, default: []
-
-  data result, :boolean, default: false
 
   def render(assigns) do
     ~F"""
     <div class="flex items-center justify-center h-screen">
       <table>
         <thead><tr><th>
-              <button type="button" :on-click="try">Try</button></th></tr></thead>
-        <tbody>
+              <Play :if={Enum.count(@tries) != 12} click="play" />
+              <Restart :if={Enum.count(@tries) == 12} click="restart" /></th></tr>
+        </thead>
+        <tbody><tr :if={Enum.count(@tries) == 12}>
+            {#for code <- @code}
+              <td>
+                <Pin color={code} />
+              </td>
+            {/for}<td>Solution</td>
+          </tr>
           <tr>
             <td><TogglePin click="toggle-1-red" /></td>
             <td><TogglePin click="toggle-2-red" /></td>
@@ -65,15 +71,15 @@ defmodule MastermindWeb.Game do
                 <Pin :if={Enum.at(step.hints, 0) == 2} size="w-6 w-6" color="fill-red-500" />
                 <Pin :if={Enum.at(step.hints, 1) == 0} size="w-6 w-6" color="fill-white-500" />
                 <Pin :if={Enum.at(step.hints, 1) == 1} size="w-6 w-6" color="fill-black" />
-                <Pin :if={Enum.at(step.hints, 0) == 2} size="w-6 w-6" color="fill-red-500" />
+                <Pin :if={Enum.at(step.hints, 1) == 2} size="w-6 w-6" color="fill-red-500" />
               </td>
               <td>
                 <Pin :if={Enum.at(step.hints, 2) == 0} size="w-6 w-6" color="fill-white-500" />
                 <Pin :if={Enum.at(step.hints, 2) == 1} size="w-6 w-6" color="fill-black" />
-                <Pin :if={Enum.at(step.hints, 0) == 2} size="w-6 w-6" color="fill-red-500" />
+                <Pin :if={Enum.at(step.hints, 2) == 2} size="w-6 w-6" color="fill-red-500" />
                 <Pin :if={Enum.at(step.hints, 3) == 0} size="w-6 w-6" color="fill-white-500" />
                 <Pin :if={Enum.at(step.hints, 3) == 1} size="w-6 w-6" color="fill-black" />
-                <Pin :if={Enum.at(step.hints, 0) == 2} size="w-6 w-6" color="fill-red-500" />
+                <Pin :if={Enum.at(step.hints, 3) == 2} size="w-6 w-6" color="fill-red-500" />
               </td>
             </tr>
           {/for}
@@ -92,22 +98,30 @@ defmodule MastermindWeb.Game do
 
   def mount(_params, _session, socket) do
     socket = assign(socket, :code, set_code())
-    socket = assign(socket, :hints, [])
+    socket = assign(socket, :tries, [])
     {:ok, socket}
   end
 
-  def handle_event("try", _value, socket) do
+  def handle_event("play", _value, socket) do
     socket =
       assign(
         socket,
         :tries,
-        [
-          %{hints: set_hints(socket.assigns), pins: socket.assigns.pins}
-        ] ++ socket.assigns.tries
+        socket.assigns.tries ++
+          [
+            %{hints: set_hints(socket.assigns), pins: socket.assigns.pins}
+          ]
       )
 
     socket = assign(socket, :pins, ["empty", "empty", "empty", "empty"])
     IO.inspect(socket.assigns.tries)
+    {:noreply, socket}
+  end
+
+  def handle_event("restart", _value, socket) do
+    socket = assign(socket, :code, set_code())
+    socket = assign(socket, :tries, [])
+    socket = assign(socket, :pins, ["empty", "empty", "empty", "empty"])
     {:noreply, socket}
   end
 
