@@ -5,8 +5,7 @@ defmodule MastermindWeb.Components.Pin do
   use Surface.Component
 
   prop(color, :string, default: "empty")
-
-  slot(default)
+  prop(size, :string, default: "w-12 w-12")
 
   def render(assigns) do
     ~F"""
@@ -16,7 +15,7 @@ defmodule MastermindWeb.Components.Pin do
       viewBox="0 0 24 24"
       stroke-width="1.5"
       stroke="currentColor"
-      class={"w-12 h-12", @color}
+      class={@size, @color}
     >
       <path
         stroke-linecap="round"

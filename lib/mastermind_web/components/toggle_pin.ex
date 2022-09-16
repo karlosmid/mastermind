@@ -7,8 +7,6 @@ defmodule MastermindWeb.Components.TogglePin do
   prop(click, :event, required: true)
   prop(color, :string, default: "fill-red-500")
 
-  slot(default)
-
   def render(assigns) do
     ~F"""
     <svg

@@ -59,12 +59,22 @@ defmodule MastermindWeb.Game do
                   <Pin color={pin} />
                 </td>
               {/for}
-              {#for hint <- step.hints}
-                <td>
-                  <Pin :if={hint == 0} color="fill-white-500" />
-                  <Pin :if={hint == 1} color="fill-black" />
-                </td>
-              {/for}
+              <td>
+                <Pin :if={Enum.at(step.hints, 0) == 0} size="w-6 w-6" color="fill-white-500" />
+                <Pin :if={Enum.at(step.hints, 0) == 1} size="w-6 w-6" color="fill-black" />
+                <Pin :if={Enum.at(step.hints, 0) == 2} size="w-6 w-6" color="fill-red-500" />
+                <Pin :if={Enum.at(step.hints, 1) == 0} size="w-6 w-6" color="fill-white-500" />
+                <Pin :if={Enum.at(step.hints, 1) == 1} size="w-6 w-6" color="fill-black" />
+                <Pin :if={Enum.at(step.hints, 0) == 2} size="w-6 w-6" color="fill-red-500" />
+              </td>
+              <td>
+                <Pin :if={Enum.at(step.hints, 2) == 0} size="w-6 w-6" color="fill-white-500" />
+                <Pin :if={Enum.at(step.hints, 2) == 1} size="w-6 w-6" color="fill-black" />
+                <Pin :if={Enum.at(step.hints, 0) == 2} size="w-6 w-6" color="fill-red-500" />
+                <Pin :if={Enum.at(step.hints, 3) == 0} size="w-6 w-6" color="fill-white-500" />
+                <Pin :if={Enum.at(step.hints, 3) == 1} size="w-6 w-6" color="fill-black" />
+                <Pin :if={Enum.at(step.hints, 0) == 2} size="w-6 w-6" color="fill-red-500" />
+              </td>
             </tr>
           {/for}
           <tr>
@@ -88,8 +98,12 @@ defmodule MastermindWeb.Game do
 
   def handle_event("try", _value, socket) do
     socket =
-      assign(socket, :tries, [
-        %{hints: set_hints(socket.assigns), pins: socket.assigns.pins}] ++ socket.assigns.tries
+      assign(
+        socket,
+        :tries,
+        [
+          %{hints: set_hints(socket.assigns), pins: socket.assigns.pins}
+        ] ++ socket.assigns.tries
       )
 
     socket = assign(socket, :pins, ["empty", "empty", "empty", "empty"])
@@ -232,7 +246,7 @@ defmodule MastermindWeb.Game do
       cond do
         Enum.at(pins, index) == Enum.at(code, index) -> [0 | acc]
         Enum.member?(code, Enum.at(pins, index)) -> [1 | acc]
-        true -> acc
+        true -> [2 | acc]
       end
     end)
   end
