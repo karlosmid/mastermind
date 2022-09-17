@@ -30,5 +30,40 @@ defmodule Mastermind.UtilsTest do
       assigns = %{code: code, pins: pins}
       assert Enum.sort(Utils.set_hints(assigns)) == [0, 1]
     end
+    
+    test "1 color 1 position duplicate color" do
+      code = ["fill-orange-500", "fill-green-500", "fill-fuchsia-500", "fill-green-500"]
+      pins = ["fill-green-500", "fill-blue-500", "fill-red-500", "fill-green-500"]
+      assigns = %{code: code, pins: pins}
+      assert Enum.sort(Utils.set_hints(assigns)) == [0, 1]
+    end
+    
+    test "same color, pins frequency equal to code frequency" do
+      code = ["fill-green-500", "fill-blue-500", "fill-fuchsia-500", "fill-green-500"]
+      pins = ["fill-yellow-500", "fill-green-500", "fill-green-500", "fill-yellow-500"]
+      assigns = %{code: code, pins: pins}
+      assert Enum.sort(Utils.set_hints(assigns)) == [1, 1]
+    end
+    
+    test "same color, pins frequency less than code frequency" do
+      code = ["fill-green-500", "fill-blue-500", "fill-fuchsia-500", "fill-green-500"]
+      pins = ["fill-yellow-500", "fill-red-500", "fill-green-500", "fill-yellow-500"]
+      assigns = %{code: code, pins: pins}
+      assert Enum.sort(Utils.set_hints(assigns)) == [1]
+    end
+    
+    test "same color, pins frequency greater than code frequency" do
+      code = ["fill-green-500", "fill-blue-500", "fill-fuchsia-500", "fill-white-500"]
+      pins = ["fill-yellow-500", "fill-green-500", "fill-green-500", "fill-yellow-500"]
+      assigns = %{code: code, pins: pins}
+      assert Enum.sort(Utils.set_hints(assigns)) == [1]
+    end
+    
+    test "same color, pins frequency greater than code frequency is 2" do
+      code = ["fill-green-500", "fill-blue-500", "fill-fuchsia-500", "fill-white-500"]
+      pins = ["fill-yellow-500", "fill-green-500", "fill-green-500", "fill-green-500"]
+      assigns = %{code: code, pins: pins}
+      assert Enum.sort(Utils.set_hints(assigns)) == [1]
+    end
   end
 end

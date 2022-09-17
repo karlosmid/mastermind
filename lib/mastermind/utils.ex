@@ -87,8 +87,7 @@ defmodule Mastermind.Utils do
             Map.get(code_color_freq_without_position_match, pin) ->
           acc ++
             Enum.map(
-              1..(Map.get(pins_color_freq_without_position_match, pin) -
-                    Map.get(code_color_freq_without_position_match, pin)),
+              1..Map.get(code_color_freq_without_position_match, pin),
               fn _x -> 1 end
             )
 
