@@ -38,6 +38,7 @@ defmodule Mastermind.Utils do
       )
 
     Enum.filter(pins_codes.pins, fn pin -> pin == 0 end) ++ colors
+    |>Enum.shuffle()
   end
 
   def set_pin(index, color, pins) do
