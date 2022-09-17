@@ -13,9 +13,8 @@ defmodule Mastermind.Utils do
       "fill-yellow-500"
     ]
 
-    ([Enum.random(colors)] ++
-       [Enum.random(colors)] ++ [Enum.random(colors)] ++ [Enum.random(colors)])
-    |> IO.inspect()
+    [Enum.random(colors)] ++
+      [Enum.random(colors)] ++ [Enum.random(colors)] ++ [Enum.random(colors)]
   end
 
   def set_hints(assigns) do
@@ -37,8 +36,8 @@ defmodule Mastermind.Utils do
         code_color_freq_without_position_match
       )
 
-    Enum.filter(pins_codes.pins, fn pin -> pin == 0 end) ++ colors
-    |>Enum.shuffle()
+    (Enum.filter(pins_codes.pins, fn pin -> pin == 0 end) ++ colors)
+    |> Enum.shuffle()
   end
 
   def set_pin(index, color, pins) do
