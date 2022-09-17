@@ -24,26 +24,18 @@ defmodule Mastermind.Utils do
 
     pins_codes = maybe_set_0_to_pins_and_code_position_if_position_match(pins, code)
 
-    pins_color_freq_without_position_match = Enum.frequencies(Enum.filter(pins_codes.pins, fn x -> x != 0 end))
-    code_color_freq_without_position_match = Enum.frequencies(Enum.filter(pins_codes.code, fn x -> x != 0 end))
+    pins_color_freq_without_position_match =
+      Enum.frequencies(Enum.filter(pins_codes.pins, fn x -> x != 0 end))
+
+    code_color_freq_without_position_match =
+      Enum.frequencies(Enum.filter(pins_codes.code, fn x -> x != 0 end))
 
     colors =
-      pins_codes.pins
-      |> Enum.filter(fn pin -> pin != 0 end)
-      |> Enum.uniq()
-      |> Enum.reduce([], fn pin, acc ->
-        cond do
-          Map.get(code_color_freq_without_position_match, pin) == nil ->
-            acc
-
-          Map.get(pins_color_freq_without_position_match, pin) > Map.get(code_color_freq_without_position_match, pin) ->
-            acc ++
-              Enum.map(1..(Map.get(pins_color_freq_without_position_match, pin) - Map.get(code_color_freq_without_position_match, pin)), fn _x -> 1 end)
-
-          Map.get(pins_color_freq_without_position_match, pin) <= Map.get(code_color_freq_without_position_match, pin) ->
-            acc ++ Enum.map(1..Map.get(pins_color_freq_without_position_match, pin), fn _x -> 1 end)
-        end
-      end)
+      maybe_set_1_for_color_match_including_duplicate_colors(
+        pins_codes.pins,
+        pins_color_freq_without_position_match,
+        code_color_freq_without_position_match
+      )
 
     Enum.filter(pins_codes.pins, fn pin -> pin == 0 end) ++ colors
   end
@@ -73,6 +65,35 @@ defmodule Mastermind.Utils do
       else
         Map.put(acc, :pins, Map.get(acc, :pins) ++ [Enum.at(pins, index)])
         |> Map.put(:code, Map.get(acc, :code) ++ [Enum.at(code, index)])
+      end
+    end)
+  end
+
+  def maybe_set_1_for_color_match_including_duplicate_colors(
+        pins,
+        pins_color_freq_without_position_match,
+        code_color_freq_without_position_match
+      ) do
+    pins
+    |> Enum.filter(fn pin -> pin != 0 end)
+    |> Enum.uniq()
+    |> Enum.reduce([], fn pin, acc ->
+      cond do
+        Map.get(code_color_freq_without_position_match, pin) == nil ->
+          acc
+
+        Map.get(pins_color_freq_without_position_match, pin) >
+            Map.get(code_color_freq_without_position_match, pin) ->
+          acc ++
+            Enum.map(
+              1..(Map.get(pins_color_freq_without_position_match, pin) -
+                    Map.get(code_color_freq_without_position_match, pin)),
+              fn _x -> 1 end
+            )
+
+        Map.get(pins_color_freq_without_position_match, pin) <=
+            Map.get(code_color_freq_without_position_match, pin) ->
+          acc ++ Enum.map(1..Map.get(pins_color_freq_without_position_match, pin), fn _x -> 1 end)
       end
     end)
   end
