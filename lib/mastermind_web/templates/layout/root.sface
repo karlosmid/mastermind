@@ -22,14 +22,6 @@
             <a href="/" class="font-semibold text-xl tracking-tight">Mastermind</a>
           </div>
           <div class="w-full block flex-grow md:flex md:items-center md:w-auto">
-            <div class="text-sm md:flex-grow">
-              {#if function_exported?(Routes, :live_dashboard_path, 2)}
-                {link("Live Dashboard",
-                  to: Routes.live_dashboard_path(@conn, :home),
-                  class: "block mt-4 md:inline-block md:mt-0 text-teal-200 hover:text-white mr-4"
-                )}
-              {/if}
-            </div>
             <div>
               <a
                 href="https://en.wikipedia.org/wiki/Mastermind_(board_game)"

@@ -1,5 +1,6 @@
 defmodule MastermindWeb.Router do
   use MastermindWeb, :router
+  import Phoenix.LiveDashboard.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -14,11 +15,18 @@ defmodule MastermindWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", MastermindWeb do
-    pipe_through :browser
+  pipeline :admins_only do
+    plug :admin_basic_auth
+  end
 
-    # get "/", PageController, :index
+  scope "/", MastermindWeb do
+    pipe_through [:browser]
     live "/", Game
+  end
+
+  scope "/livedashboard", MastermindWeb do
+    pipe_through [:browser, :admins_only]
+    live_dashboard "/", metrics: MastermindWeb.Telemetry
   end
 
   # Other scopes may use custom stacks.
@@ -33,15 +41,15 @@ defmodule MastermindWeb.Router do
   # If your application does not have an admins-only section yet,
   # you can use Plug.BasicAuth to set up some basic authentication
   # as long as you are also using SSL (which you should anyway).
-  if Mix.env() in [:dev, :test] do
-    import Phoenix.LiveDashboard.Router
+  # if Mix.env() in [:dev, :test] do
+  # import Phoenix.LiveDashboard.Router
 
-    scope "/" do
-      pipe_through :browser
+  #    scope "/" do
+  #     pipe_through :browser
 
-      live_dashboard "/dashboard", metrics: MastermindWeb.Telemetry
-    end
-  end
+  #    live_dashboard "/dashboard", metrics: MastermindWeb.Telemetry
+  # end
+  # end
 
   # Enables the Swoosh mailbox preview in development.
   #
@@ -53,5 +61,11 @@ defmodule MastermindWeb.Router do
 
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  defp admin_basic_auth(conn, _opts) do
+    username = System.fetch_env!("AUTH_USERNAME")
+    password = System.fetch_env!("AUTH_PASSWORD")
+    Plug.BasicAuth.basic_auth(conn, username: username, password: password)
   end
 end
