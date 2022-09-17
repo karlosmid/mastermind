@@ -65,6 +65,13 @@ defmodule Mastermind.UtilsTest do
       assigns = %{code: code, pins: pins}
       assert Enum.sort(Utils.set_hints(assigns)) == [1]
     end
+
+    test "yellow, yellow, orange, yellow" do
+      code = ["fill-yellow-500", "fill-yellow-500", "fill-orange-500", "fill-yellow-500"]
+      pins = ["fill-yellow-500", "fill-yellow-500", "fill-orange-500", "fill-yellow-500"]
+      assigns = %{code: code, pins: pins}
+      assert Enum.sort(Utils.set_hints(assigns)) == [0, 0, 0, 0]
+    end
   end
 
   describe "set_code/0" do
@@ -81,15 +88,15 @@ defmodule Mastermind.UtilsTest do
     test "same color sets empty", %{pins: pins} do
       assert Enum.at(Utils.set_pin(0, "fill-green-500", pins), 0) == "empty"
     end
-    
+
     test "index 1", %{pins: pins} do
       assert Enum.at(Utils.set_pin(1, "fill-green-500", pins), 1) == "fill-green-500"
     end
-    
+
     test "index 2", %{pins: pins} do
       assert Enum.at(Utils.set_pin(2, "fill-green-500", pins), 2) == "fill-green-500"
     end
-    
+
     test "index 3", %{pins: pins} do
       assert Enum.at(Utils.set_pin(3, "fill-green-500", pins), 3) == "fill-green-500"
     end

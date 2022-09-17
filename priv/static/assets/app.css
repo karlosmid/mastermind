@@ -840,10 +840,6 @@ select {
   height: 1.5rem;
 }
 
-.h-screen {
-  height: 100vh;
-}
-
 .w-12 {
   width: 3rem;
 }

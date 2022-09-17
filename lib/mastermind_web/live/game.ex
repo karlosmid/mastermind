@@ -8,20 +8,23 @@ defmodule MastermindWeb.Game do
 
   data tries, :list, default: []
 
+  data no_steps, :integer, default: 12
+
   def render(assigns) do
     ~F"""
-    <div class="flex items-center justify-center h-screen">
+    <div class="flex items-center justify-center">
       <table>
         <thead><tr><th>
-              <Play :if={Enum.count(@tries) != 12} click="play" />
-              <Restart :if={Enum.count(@tries) == 12} click="restart" /></th></tr>
+              <Play :if={not stop(@tries, @no_steps)} click="play" />
+              <Restart :if={stop(@tries, @no_steps)} click="restart" /></th>
+            <th :if={stop(@tries, @no_steps)}>C O D E</th></tr>
         </thead>
-        <tbody><tr :if={Enum.count(@tries) == 12}>
+        <tbody><tr :if={stop(@tries, @no_steps)}>
             {#for code <- @code}
               <td>
                 <Pin color={code} />
               </td>
-            {/for}<td>Solution</td>
+            {/for}
           </tr>
           <tr>
             <td><TogglePin click="toggle-1-red" /></td>
@@ -220,5 +223,9 @@ defmodule MastermindWeb.Game do
 
   def handle_event("toggle-4-fuchsia", _value, socket) do
     {:noreply, assign(socket, :pins, Utils.set_pin(4, "fill-fuchsia-500", socket.assigns.pins))}
+  end
+
+  defp stop(tries, no_steps) do
+    Enum.count(tries) == no_steps || (tries != [] && Enum.at(tries, -1).hints == [0, 0, 0, 0])
   end
 end
