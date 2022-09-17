@@ -22,17 +22,7 @@ defmodule Mastermind.Utils do
     pins = assigns.pins
     code = assigns.code
 
-    pins_codes =
-      Enum.reduce(0..3, %{pins: [], code: []}, fn index, acc ->
-        if Enum.at(pins, index) ==
-             Enum.at(code, index) do
-          Map.put(acc, :pins, Map.get(acc, :pins) ++ [0])
-          |> Map.put(:code, Map.get(acc, :code) ++ [0])
-        else
-          Map.put(acc, :pins, Map.get(acc, :pins) ++ [Enum.at(pins, index)])
-          |> Map.put(:code, Map.get(acc, :code) ++ [Enum.at(code, index)])
-        end
-      end)
+    pins_codes = maybe_set_0_to_pin_position_if_position_match(pins, code)
 
     pins_freq = Enum.frequencies(Enum.filter(pins_codes.pins, fn x -> x != 0 end))
     code_freq = Enum.frequencies(Enum.filter(pins_codes.code, fn x -> x != 0 end))
@@ -72,5 +62,18 @@ defmodule Mastermind.Utils do
       index == 2 -> Enum.slice(pins, 0..1) ++ [current] ++ [Enum.at(pins, 3)]
       true -> Enum.slice(pins, 0..2) ++ [current]
     end
+  end
+
+  defp maybe_set_0_to_pin_position_if_position_match(pins, code) do
+    Enum.reduce(0..3, %{pins: [], code: []}, fn index, acc ->
+      if Enum.at(pins, index) ==
+           Enum.at(code, index) do
+        Map.put(acc, :pins, Map.get(acc, :pins) ++ [0])
+        |> Map.put(:code, Map.get(acc, :code) ++ [0])
+      else
+        Map.put(acc, :pins, Map.get(acc, :pins) ++ [Enum.at(pins, index)])
+        |> Map.put(:code, Map.get(acc, :code) ++ [Enum.at(code, index)])
+      end
+    end)
   end
 end
