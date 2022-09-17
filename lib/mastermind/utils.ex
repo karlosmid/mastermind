@@ -22,10 +22,10 @@ defmodule Mastermind.Utils do
     pins = assigns.pins
     code = assigns.code
 
-    pins_codes = maybe_set_0_to_pin_position_if_position_match(pins, code)
+    pins_codes = maybe_set_0_to_pins_and_code_position_if_position_match(pins, code)
 
-    pins_freq = Enum.frequencies(Enum.filter(pins_codes.pins, fn x -> x != 0 end))
-    code_freq = Enum.frequencies(Enum.filter(pins_codes.code, fn x -> x != 0 end))
+    pins_color_freq_without_position_match = Enum.frequencies(Enum.filter(pins_codes.pins, fn x -> x != 0 end))
+    code_color_freq_without_position_match = Enum.frequencies(Enum.filter(pins_codes.code, fn x -> x != 0 end))
 
     colors =
       pins_codes.pins
@@ -33,15 +33,15 @@ defmodule Mastermind.Utils do
       |> Enum.uniq()
       |> Enum.reduce([], fn pin, acc ->
         cond do
-          Map.get(code_freq, pin) == nil ->
+          Map.get(code_color_freq_without_position_match, pin) == nil ->
             acc
 
-          Map.get(pins_freq, pin) > Map.get(code_freq, pin) ->
+          Map.get(pins_color_freq_without_position_match, pin) > Map.get(code_color_freq_without_position_match, pin) ->
             acc ++
-              Enum.map(1..(Map.get(pins_freq, pin) - Map.get(code_freq, pin)), fn _x -> 1 end)
+              Enum.map(1..(Map.get(pins_color_freq_without_position_match, pin) - Map.get(code_color_freq_without_position_match, pin)), fn _x -> 1 end)
 
-          Map.get(pins_freq, pin) <= Map.get(code_freq, pin) ->
-            acc ++ Enum.map(1..Map.get(pins_freq, pin), fn _x -> 1 end)
+          Map.get(pins_color_freq_without_position_match, pin) <= Map.get(code_color_freq_without_position_match, pin) ->
+            acc ++ Enum.map(1..Map.get(pins_color_freq_without_position_match, pin), fn _x -> 1 end)
         end
       end)
 
@@ -64,7 +64,7 @@ defmodule Mastermind.Utils do
     end
   end
 
-  defp maybe_set_0_to_pin_position_if_position_match(pins, code) do
+  defp maybe_set_0_to_pins_and_code_position_if_position_match(pins, code) do
     Enum.reduce(0..3, %{pins: [], code: []}, fn index, acc ->
       if Enum.at(pins, index) ==
            Enum.at(code, index) do
