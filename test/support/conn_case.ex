@@ -31,8 +31,8 @@ defmodule MastermindWeb.ConnCase do
     end
   end
 
-  setup _tags do
-    # Mastermind.DataCase.setup_sandbox(tags)
+  setup tags do
+    Mastermind.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 end

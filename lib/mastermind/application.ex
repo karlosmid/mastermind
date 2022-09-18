@@ -9,7 +9,7 @@ defmodule Mastermind.Application do
   def start(_type, _args) do
     children = [
       # Start the Ecto repository
-      # Mastermind.Repo,
+      Mastermind.Repo,
       # Start the Telemetry supervisor
       MastermindWeb.Telemetry,
       # Start the PubSub system
