@@ -118,7 +118,6 @@ defmodule MastermindWeb.Game do
       )
 
     socket = assign(socket, :pins, ["empty", "empty", "empty", "empty"])
-    IO.inspect(socket.assigns.tries)
     {:noreply, socket}
   end
 
