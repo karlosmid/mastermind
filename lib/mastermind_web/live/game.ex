@@ -17,9 +17,10 @@ defmodule MastermindWeb.Game do
         <thead><tr><th>
               <Play :if={not stop(@tries, @no_steps)} click="play" />
               <Restart :if={stop(@tries, @no_steps)} click="restart" /></th>
-            <th :if={stop(@tries, @no_steps)}>C O D E</th></tr>
+          </tr>
         </thead>
         <tbody><tr :if={stop(@tries, @no_steps)}>
+            <td :if={stop(@tries, @no_steps)}>C O D E</td>
             {#for code <- @code}
               <td>
                 <Pin color={code} />
@@ -27,72 +28,73 @@ defmodule MastermindWeb.Game do
             {/for}
           </tr>
           <tr>
+            <td />
             <td><TogglePin click="toggle-1-red" /></td>
             <td><TogglePin click="toggle-2-red" /></td>
             <td><TogglePin click="toggle-3-red" /></td>
             <td><TogglePin click="toggle-4-red" /></td>
           </tr>
           <tr>
+            <td />
             <td><TogglePin color="fill-blue-500" click="toggle-1-blue" /></td>
             <td><TogglePin color="fill-blue-500" click="toggle-2-blue" /></td>
             <td><TogglePin color="fill-blue-500" click="toggle-3-blue" /></td>
             <td><TogglePin color="fill-blue-500" click="toggle-4-blue" /></td>
           </tr>
           <tr>
+            <td />
             <td><TogglePin color="fill-yellow-500" click="toggle-1-yellow" /></td>
             <td><TogglePin color="fill-yellow-500" click="toggle-2-yellow" /></td>
             <td><TogglePin color="fill-yellow-500" click="toggle-3-yellow" /></td>
             <td><TogglePin color="fill-yellow-500" click="toggle-4-yellow" /></td>
           </tr>
           <tr>
+            <td />
             <td><TogglePin color="fill-orange-500" click="toggle-1-orange" /></td>
             <td><TogglePin color="fill-orange-500" click="toggle-2-orange" /></td>
             <td><TogglePin color="fill-orange-500" click="toggle-3-orange" /></td>
             <td><TogglePin color="fill-orange-500" click="toggle-4-orange" /></td>
           </tr>
           <tr>
+            <td />
             <td><TogglePin color="fill-green-500" click="toggle-1-green" /></td>
             <td><TogglePin color="fill-green-500" click="toggle-2-green" /></td>
             <td><TogglePin color="fill-green-500" click="toggle-3-green" /></td>
             <td><TogglePin color="fill-green-500" click="toggle-4-green" /></td>
           </tr>
           <tr>
+            <td />
             <td><TogglePin color="fill-fuchsia-500" click="toggle-1-fuchsia" /></td>
             <td><TogglePin color="fill-fuchsia-500" click="toggle-2-fuchsia" /></td>
             <td><TogglePin color="fill-fuchsia-500" click="toggle-3-fuchsia" /></td>
             <td><TogglePin color="fill-fuchsia-500" click="toggle-4-fuchsia" /></td>
-          </tr>
-          {#for step <- @tries}
-            <tr>
-              {#for pin <- step.pins}
-                <td>
-                  <Pin color={pin} />
-                </td>
-              {/for}
-              <td>
-                <Pin :if={Enum.at(step.hints, 0) == 0} size="w-6 w-6" color="fill-white-500" />
-                <Pin :if={Enum.at(step.hints, 0) == 1} size="w-6 w-6" color="fill-black" />
-                <Pin :if={Enum.at(step.hints, 0) == 2} size="w-6 w-6" color="fill-red-500" />
-                <Pin :if={Enum.at(step.hints, 1) == 0} size="w-6 w-6" color="fill-white-500" />
-                <Pin :if={Enum.at(step.hints, 1) == 1} size="w-6 w-6" color="fill-black" />
-                <Pin :if={Enum.at(step.hints, 1) == 2} size="w-6 w-6" color="fill-red-500" />
-              </td>
-              <td>
-                <Pin :if={Enum.at(step.hints, 2) == 0} size="w-6 w-6" color="fill-white-500" />
-                <Pin :if={Enum.at(step.hints, 2) == 1} size="w-6 w-6" color="fill-black" />
-                <Pin :if={Enum.at(step.hints, 2) == 2} size="w-6 w-6" color="fill-red-500" />
-                <Pin :if={Enum.at(step.hints, 3) == 0} size="w-6 w-6" color="fill-white-500" />
-                <Pin :if={Enum.at(step.hints, 3) == 1} size="w-6 w-6" color="fill-black" />
-                <Pin :if={Enum.at(step.hints, 3) == 2} size="w-6 w-6" color="fill-red-500" />
-              </td>
-            </tr>
-          {/for}
-          <tr>
+          </tr><tr>
+            <td />
             {#for pin <- @pins}
               <td>
                 <Pin color={pin} />
               </td>
             {/for}
+          </tr>
+          <tr :for.with_index={{step, index} <- @tries}>
+            <td># {Enum.count(@tries) - index}</td>
+            {#for pin <- step.pins}
+              <td>
+                <Pin color={pin} />
+              </td>
+            {/for}
+            <td>
+              <Pin :if={Enum.at(step.hints, 0) == 1} size="w-6 w-6" color="fill-white-500" />
+              <Pin :if={Enum.at(step.hints, 0) == 0} size="w-6 w-6" color="fill-black" />
+              <Pin :if={Enum.at(step.hints, 1) == 1} size="w-6 w-6" color="fill-white-500" />
+              <Pin :if={Enum.at(step.hints, 1) == 0} size="w-6 w-6" color="fill-black" />
+            </td>
+            <td>
+              <Pin :if={Enum.at(step.hints, 2) == 1} size="w-6 w-6" color="fill-white-500" />
+              <Pin :if={Enum.at(step.hints, 2) == 0} size="w-6 w-6" color="fill-black" />
+              <Pin :if={Enum.at(step.hints, 3) == 1} size="w-6 w-6" color="fill-white-500" />
+              <Pin :if={Enum.at(step.hints, 3) == 0} size="w-6 w-6" color="fill-black" />
+            </td>
           </tr>
         </tbody>
       </table>
@@ -101,7 +103,7 @@ defmodule MastermindWeb.Game do
   end
 
   def mount(_params, _session, socket) do
-    socket = assign(socket, :code, Utils.set_code())
+    socket = assign(socket, :code, Utils.set_code() |> IO.inspect())
     socket = assign(socket, :tries, [])
     {:ok, socket}
   end
@@ -111,10 +113,9 @@ defmodule MastermindWeb.Game do
       assign(
         socket,
         :tries,
-        socket.assigns.tries ++
-          [
-            %{hints: Utils.set_hints(socket.assigns), pins: socket.assigns.pins}
-          ]
+        [
+          %{hints: Utils.set_hints(socket.assigns), pins: socket.assigns.pins}
+        ] ++ socket.assigns.tries
       )
 
     socket = assign(socket, :pins, ["empty", "empty", "empty", "empty"])
@@ -225,6 +226,6 @@ defmodule MastermindWeb.Game do
   end
 
   defp stop(tries, no_steps) do
-    Enum.count(tries) == no_steps || (tries != [] && Enum.at(tries, -1).hints == [0, 0, 0, 0])
+    Enum.count(tries) == no_steps || (tries != [] && Enum.at(tries, 0).hints == [0, 0, 0, 0])
   end
 end
