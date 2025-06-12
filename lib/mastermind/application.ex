@@ -8,16 +8,16 @@ defmodule Mastermind.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
-      Mastermind.Repo,
-      # Start the Telemetry supervisor
       MastermindWeb.Telemetry,
-      # Start the PubSub system
+      Mastermind.Repo,
+      {DNSCluster, query: Application.get_env(:mastermind, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Mastermind.PubSub},
-      # Start the Endpoint (http/https)
-      MastermindWeb.Endpoint
+      # Start the Finch HTTP client for sending emails
+      {Finch, name: Mastermind.Finch},
       # Start a worker by calling: Mastermind.Worker.start_link(arg)
-      # {Mastermind.Worker, arg}
+      # {Mastermind.Worker, arg},
+      # Start to serve requests, typically the last entry
+      MastermindWeb.Endpoint
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

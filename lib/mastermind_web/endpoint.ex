@@ -7,10 +7,13 @@ defmodule MastermindWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_mastermind_key",
-    signing_salt: "DghRKGrK"
+    signing_salt: "DghRKGrK",
+    same_site: "Lax"
   ]
 
-  socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
+  socket "/live", Phoenix.LiveView.Socket,
+    websocket: [connect_info: [session: @session_options]],
+    longpoll: [connect_info: [session: @session_options]]
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -20,7 +23,7 @@ defmodule MastermindWeb.Endpoint do
     at: "/",
     from: :mastermind,
     gzip: false,
-    only: ~w(assets fonts images favicon.ico robots.txt)
+    only: MastermindWeb.static_paths()
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
