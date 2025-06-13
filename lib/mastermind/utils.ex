@@ -3,18 +3,12 @@ defmodule Mastermind.Utils do
   mastermind gameplay helpers
   """
 
-  def set_code() do
-    colors = [
-      "fill-red-500",
-      "fill-blue-500",
-      "fill-orange-500",
-      "fill-green-500",
-      "fill-fuchsia-500",
-      "fill-yellow-500"
-    ]
+  def colors, do: [:red, :blue, :orange, :green, :fuchsia, :yellow]
 
-    [Enum.random(colors)] ++
-      [Enum.random(colors)] ++ [Enum.random(colors)] ++ [Enum.random(colors)]
+  def set_code() do
+    colors()
+    |> Enum.shuffle()
+    |> Enum.take_random(4)
   end
 
   def set_hints(assigns) do
@@ -42,11 +36,9 @@ defmodule Mastermind.Utils do
 
   def set_pin(index, color, pins) do
     current =
-      if Enum.at(pins, index) == color do
-        "empty"
-      else
-        color
-      end
+      if Enum.at(pins, index) == color,
+        do: :empty,
+        else: color
 
     cond do
       index == 0 -> [current] ++ Enum.slice(pins, 1..3)

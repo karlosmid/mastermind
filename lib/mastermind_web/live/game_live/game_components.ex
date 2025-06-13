@@ -1,77 +1,83 @@
 defmodule MastermindWeb.GameLive.GameComponents do
   use MastermindWeb, :live_component
 
-  attr :phx_click, :string, required: true
-
   def play(assigns) do
     ~H"""
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      class="w-12 h-12"
-      phx-click={@phx_click}
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"
-      />
-    </svg>
+    <button class="cursor-pointer hover:scale-110" phx-click="play">
+      <.icon name="hero-play-solid" class="w-12 h-12 text-teal-500" />
+    </button>
     """
   end
-
-  attr :phx_click, :string, required: true
 
   def restart(assigns) do
     ~H"""
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      class="w-6 h-6"
-      phx-click={@phx_click}
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
-      />
-    </svg>
+    <button class="cursor-pointer hover:scale-110" phx-click="restart">
+      <.icon name="hero-arrow-path" class="w-10 h-10 text-rose-500" />
+    </button>
     """
   end
 
-  attr :phx_click, :string, required: true
-  attr :color, :string, default: "fill-red-500"
+  attr :color, :string, required: true
+  attr :selected, :boolean, default: false
 
-  def toggle_pin(assigns) do
+  def color_pin(assigns) do
+    color_class =
+      case assigns.color do
+        :red -> "text-red-500"
+        :blue -> "text-blue-500"
+        :yellow -> "text-yellow-500"
+        :orange -> "text-orange-500"
+        :green -> "text-green-500"
+        :fuchsia -> "text-fuchsia-500"
+      end
+
+    assigns = assign(assigns, :color_class, color_class)
+
     ~H"""
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      class={["w-12 h-12", @color]}
-      phx-click={@phx_click}
+    <button
+      phx-click="select_color"
+      phx-value-color={@color}
+      class={[
+        "cursor-pointer hover:scale-110 rounded-full",
+        if(@selected, do: "border-2 border-red-700")
+      ]}
     >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+      <.icon
+        name="hero-plus-circle-solid"
+        class={
+          [
+            "w-14 h-14",
+            @color_class
+          ]
+          |> Enum.join(" ")
+        }
       />
-    </svg>
+    </button>
     """
   end
 
   attr :size, :string, default: "w-12 h-12"
-  attr :color, :string, default: "empty"
+  attr :color, :atom, default: :empty
+  attr :active?, :boolean, default: false
+  attr :rest, :global, include: ~w(phx-click phx-value-index)
 
   def pin(assigns) do
+    color_class =
+      case assigns.color do
+        :red -> "fill-red-500"
+        :blue -> "fill-blue-500"
+        :yellow -> "fill-yellow-500"
+        :orange -> "fill-orange-500"
+        :green -> "fill-green-500"
+        :fuchsia -> "fill-fuchsia-500"
+        :black -> "fill-black"
+        :white -> "fill-white-500"
+        :empty -> "fill-white-500"
+        nil -> "fill-white-500"
+      end
+
+    assigns = assign(assigns, :color_class, color_class)
+
     ~H"""
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +85,12 @@ defmodule MastermindWeb.GameLive.GameComponents do
       viewBox="0 0 24 24"
       stroke-width="1.5"
       stroke="currentColor"
-      class={[@size, @color]}
+      class={[
+        if(@active?, do: "cursor-pointer hover:scale-110"),
+        @size,
+        @color_class
+      ]}
+      {@rest}
     >
       <path
         stroke-linecap="round"

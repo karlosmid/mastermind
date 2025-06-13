@@ -1,84 +1,45 @@
-<div class="flex items-center justify-center">
+<div class="flex items-center justify-center flex-col gap-4">
+  <div class="flex items-center justify-center flex-row">
+    <.color_pin :for={color <- @colors} color={color} selected={@selected_color == color} />
+  </div>
+
   <table>
     <thead>
-      <tr>
+      <tr :if={stop(@tries, @no_steps)}>
         <th>
-          <.play :if={not stop(@tries, @no_steps)} phx_click="play" />
-          <.restart :if={stop(@tries, @no_steps)} phx_click="restart" />
+          <p>CODE:</p>
         </th>
+        <th :for={code <- @code}>
+          <.pin color={code} />
+        </th>
+        <th><.restart /></th>
       </tr>
     </thead>
     <tbody>
-      <tr :if={stop(@tries, @no_steps)}>
-        <td :if={stop(@tries, @no_steps)}>C O D E</td>
-        <td :for={code <- @code}>
-          <.pin color={code} />
+      <tr>
+        <th>
+          <p>TRY:</p>
+        </th>
+        <td :for={{pin, index} <- Enum.with_index(@pins)}>
+          <.pin color={pin} phx-click="toggle_pin" phx-value-index={index} active?={true} />
         </td>
-      </tr>
-      <tr>
-        <td />
-        <td><.toggle_pin phx_click="toggle-1-red" /></td>
-        <td><.toggle_pin phx_click="toggle-2-red" /></td>
-        <td><.toggle_pin phx_click="toggle-3-red" /></td>
-        <td><.toggle_pin phx_click="toggle-4-red" /></td>
-      </tr>
-      <tr>
-        <td />
-        <td><.toggle_pin color="fill-blue-500" phx_click="toggle-1-blue" /></td>
-        <td><.toggle_pin color="fill-blue-500" phx_click="toggle-2-blue" /></td>
-        <td><.toggle_pin color="fill-blue-500" phx_click="toggle-3-blue" /></td>
-        <td><.toggle_pin color="fill-blue-500" phx_click="toggle-4-blue" /></td>
-      </tr>
-      <tr>
-        <td />
-        <td><.toggle_pin color="fill-yellow-500" phx_click="toggle-1-yellow" /></td>
-        <td><.toggle_pin color="fill-yellow-500" phx_click="toggle-2-yellow" /></td>
-        <td><.toggle_pin color="fill-yellow-500" phx_click="toggle-3-yellow" /></td>
-        <td><.toggle_pin color="fill-yellow-500" phx_click="toggle-4-yellow" /></td>
-      </tr>
-      <tr>
-        <td />
-        <td><.toggle_pin color="fill-orange-500" phx_click="toggle-1-orange" /></td>
-        <td><.toggle_pin color="fill-orange-500" phx_click="toggle-2-orange" /></td>
-        <td><.toggle_pin color="fill-orange-500" phx_click="toggle-3-orange" /></td>
-        <td><.toggle_pin color="fill-orange-500" phx_click="toggle-4-orange" /></td>
-      </tr>
-      <tr>
-        <td />
-        <td><.toggle_pin color="fill-green-500" phx_click="toggle-1-green" /></td>
-        <td><.toggle_pin color="fill-green-500" phx_click="toggle-2-green" /></td>
-        <td><.toggle_pin color="fill-green-500" phx_click="toggle-3-green" /></td>
-        <td><.toggle_pin color="fill-green-500" phx_click="toggle-4-green" /></td>
-      </tr>
-      <tr>
-        <td />
-        <td><.toggle_pin color="fill-fuchsia-500" phx_click="toggle-1-fuchsia" /></td>
-        <td><.toggle_pin color="fill-fuchsia-500" phx_click="toggle-2-fuchsia" /></td>
-        <td><.toggle_pin color="fill-fuchsia-500" phx_click="toggle-3-fuchsia" /></td>
-        <td><.toggle_pin color="fill-fuchsia-500" phx_click="toggle-4-fuchsia" /></td>
-      </tr>
-      <tr>
-        <td />
-        <td :for={pin <- @pins}>
-          <.pin color={pin} />
-        </td>
+        <td><.play :if={not stop(@tries, @no_steps)} /></td>
       </tr>
       <tr :for={{step, index} <- Enum.with_index(@tries)}>
-        <td># {Enum.count(@tries) - index}</td>
+        <td>
+          <p># {Enum.count(@tries) - index}</p>
+        </td>
         <td :for={pin <- step.pins}>
           <.pin color={pin} />
         </td>
         <td>
-          <.pin :if={Enum.at(step.hints, 0) == 1} size="w-6 w-6" color="fill-white-500" />
-          <.pin :if={Enum.at(step.hints, 0) == 0} size="w-6 w-6" color="fill-black" />
-          <.pin :if={Enum.at(step.hints, 1) == 1} size="w-6 w-6" color="fill-white-500" />
-          <.pin :if={Enum.at(step.hints, 1) == 0} size="w-6 w-6" color="fill-black" />
-        </td>
-        <td>
-          <.pin :if={Enum.at(step.hints, 2) == 1} size="w-6 w-6" color="fill-white-500" />
-          <.pin :if={Enum.at(step.hints, 2) == 0} size="w-6 w-6" color="fill-black" />
-          <.pin :if={Enum.at(step.hints, 3) == 1} size="w-6 w-6" color="fill-white-500" />
-          <.pin :if={Enum.at(step.hints, 3) == 0} size="w-6 w-6" color="fill-black" />
+          <div class="grid grid-cols-2">
+            <.pin
+              :for={hint <- step.hints}
+              size="w-6 w-6"
+              color={if hint == 1, do: :white, else: :black}
+            />
+          </div>
         </td>
       </tr>
     </tbody>
