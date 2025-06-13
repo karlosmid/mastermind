@@ -19,15 +19,15 @@ defmodule MastermindWeb.ConnCase do
 
   using do
     quote do
+      # The default endpoint for testing
+      @endpoint MastermindWeb.Endpoint
+
+      use MastermindWeb, :verified_routes
+
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
       import MastermindWeb.ConnCase
-
-      alias MastermindWeb.Router.Helpers, as: Routes
-
-      # The default endpoint for testing
-      @endpoint MastermindWeb.Endpoint
     end
   end
 

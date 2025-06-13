@@ -1,110 +1,18 @@
-defmodule MastermindWeb.Game do
-  use Surface.LiveView
+defmodule MastermindWeb.GameLive do
+  use MastermindWeb, :live_view
 
-  alias MastermindWeb.Components.{TogglePin, Pin, Play, Restart}
+  import MastermindWeb.GameLive.GameComponents
+
   alias Mastermind.Utils
 
-  data pins, :list, default: ["empty", "empty", "empty", "empty"]
-
-  data tries, :list, default: []
-
-  data no_steps, :integer, default: 12
-
-  def render(assigns) do
-    ~F"""
-    <div class="flex items-center justify-center">
-      <table>
-        <thead><tr><th>
-              <Play :if={not stop(@tries, @no_steps)} click="play" />
-              <Restart :if={stop(@tries, @no_steps)} click="restart" /></th>
-          </tr>
-        </thead>
-        <tbody><tr :if={stop(@tries, @no_steps)}>
-            <td :if={stop(@tries, @no_steps)}>C O D E</td>
-            {#for code <- @code}
-              <td>
-                <Pin color={code} />
-              </td>
-            {/for}
-          </tr>
-          <tr>
-            <td />
-            <td><TogglePin click="toggle-1-red" /></td>
-            <td><TogglePin click="toggle-2-red" /></td>
-            <td><TogglePin click="toggle-3-red" /></td>
-            <td><TogglePin click="toggle-4-red" /></td>
-          </tr>
-          <tr>
-            <td />
-            <td><TogglePin color="fill-blue-500" click="toggle-1-blue" /></td>
-            <td><TogglePin color="fill-blue-500" click="toggle-2-blue" /></td>
-            <td><TogglePin color="fill-blue-500" click="toggle-3-blue" /></td>
-            <td><TogglePin color="fill-blue-500" click="toggle-4-blue" /></td>
-          </tr>
-          <tr>
-            <td />
-            <td><TogglePin color="fill-yellow-500" click="toggle-1-yellow" /></td>
-            <td><TogglePin color="fill-yellow-500" click="toggle-2-yellow" /></td>
-            <td><TogglePin color="fill-yellow-500" click="toggle-3-yellow" /></td>
-            <td><TogglePin color="fill-yellow-500" click="toggle-4-yellow" /></td>
-          </tr>
-          <tr>
-            <td />
-            <td><TogglePin color="fill-orange-500" click="toggle-1-orange" /></td>
-            <td><TogglePin color="fill-orange-500" click="toggle-2-orange" /></td>
-            <td><TogglePin color="fill-orange-500" click="toggle-3-orange" /></td>
-            <td><TogglePin color="fill-orange-500" click="toggle-4-orange" /></td>
-          </tr>
-          <tr>
-            <td />
-            <td><TogglePin color="fill-green-500" click="toggle-1-green" /></td>
-            <td><TogglePin color="fill-green-500" click="toggle-2-green" /></td>
-            <td><TogglePin color="fill-green-500" click="toggle-3-green" /></td>
-            <td><TogglePin color="fill-green-500" click="toggle-4-green" /></td>
-          </tr>
-          <tr>
-            <td />
-            <td><TogglePin color="fill-fuchsia-500" click="toggle-1-fuchsia" /></td>
-            <td><TogglePin color="fill-fuchsia-500" click="toggle-2-fuchsia" /></td>
-            <td><TogglePin color="fill-fuchsia-500" click="toggle-3-fuchsia" /></td>
-            <td><TogglePin color="fill-fuchsia-500" click="toggle-4-fuchsia" /></td>
-          </tr><tr>
-            <td />
-            {#for pin <- @pins}
-              <td>
-                <Pin color={pin} />
-              </td>
-            {/for}
-          </tr>
-          <tr :for.with_index={{step, index} <- @tries}>
-            <td># {Enum.count(@tries) - index}</td>
-            {#for pin <- step.pins}
-              <td>
-                <Pin color={pin} />
-              </td>
-            {/for}
-            <td>
-              <Pin :if={Enum.at(step.hints, 0) == 1} size="w-6 w-6" color="fill-white-500" />
-              <Pin :if={Enum.at(step.hints, 0) == 0} size="w-6 w-6" color="fill-black" />
-              <Pin :if={Enum.at(step.hints, 1) == 1} size="w-6 w-6" color="fill-white-500" />
-              <Pin :if={Enum.at(step.hints, 1) == 0} size="w-6 w-6" color="fill-black" />
-            </td>
-            <td>
-              <Pin :if={Enum.at(step.hints, 2) == 1} size="w-6 w-6" color="fill-white-500" />
-              <Pin :if={Enum.at(step.hints, 2) == 0} size="w-6 w-6" color="fill-black" />
-              <Pin :if={Enum.at(step.hints, 3) == 1} size="w-6 w-6" color="fill-white-500" />
-              <Pin :if={Enum.at(step.hints, 3) == 0} size="w-6 w-6" color="fill-black" />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    """
-  end
-
   def mount(_params, _session, socket) do
-    socket = assign(socket, :code, Utils.set_code() |> IO.inspect())
-    socket = assign(socket, :tries, [])
+    socket =
+      socket
+      |> assign(:no_steps, 12)
+      |> assign(:pins, ["empty", "empty", "empty", "empty"])
+      |> assign(:tries, [])
+      |> assign(:code, Utils.set_code())
+
     {:ok, socket}
   end
 

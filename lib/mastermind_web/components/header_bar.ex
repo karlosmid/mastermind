@@ -1,20 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {csrf_meta_tag()}
-    {live_title_tag(assigns[:page_title] || "Mastermind", suffix: " in Phoenix Framework")}
-    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}>
-    <script
-      defer
-      phx-track-static
-      type="text/javascript"
-      src={Routes.static_path(@conn, "/assets/app.js")}
-    />
-  </head>
-  <body>
+defmodule MastermindWeb.HeaderBar do
+  use MastermindWeb, :live_component
+
+  def render(assigns) do
+    ~H"""
     <header class="bg-neutral-900">
       <section class="container mx-auto">
         <nav class="flex items-center justify-between flex-wrap p-6">
@@ -26,12 +14,14 @@
               <a
                 href="https://en.wikipedia.org/wiki/Mastermind_(board_game)"
                 class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
-              >Rules</a>
+              >
+                Rules
+              </a>
             </div>
           </div>
         </nav>
       </section>
     </header>
-    {@inner_content}
-  </body>
-</html>
+    """
+  end
+end
